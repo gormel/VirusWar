@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace VirusWarCore
 {
@@ -14,7 +11,9 @@ namespace VirusWarCore
             Order = order;
         }
 
+        [JsonProperty("id")]
         public Guid Id { get; private set; }
+        [JsonProperty("order")]
         public int Order { get; private set; }
     }
 }

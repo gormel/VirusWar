@@ -58,17 +58,17 @@ namespace VirusWarCore
             var fieldValue = Field[x][y];
             if (!fieldValue.Alive || fieldValue.PlayerId == mPlayers[mCurrentPlayerIndex].Id)
                 return false;
-            for (int i_x = x - 1; i_x < x + 2; i_x++)
+            for (int iX = x - 1; iX < x + 2; iX++)
             {
-                for (int i_y = y - 1; i_y < y + 2; i_y++)
+                for (int iY = y - 1; iY < y + 2; iY++)
                 {
-                    if (i_x == x && i_y == y || used.Any(c => c.X == i_x && c.Y == i_y))
+                    if (iX == x && iY == y || used.Any(c => c.X == iX && c.Y == iY))
                         continue;
-                    fieldValue = Field[i_x][i_y];
+                    fieldValue = Field[iX][iY];
                     if (fieldValue.Alive && fieldValue.PlayerId == mPlayers[mCurrentPlayerIndex].Id)
                         return true;
                     if (!fieldValue.Alive && fieldValue.PlayerId == mPlayers[NextPlayerIndex].Id)
-                        if (AvaliableInner(i_x, i_y, used.Concat(new[] {new Coord(x, y)}).ToList()))
+                        if (AvaliableInner(iX, iY, used.Concat(new[] {new Coord(x, y)}).ToList()))
                             return true;
                 }
             }

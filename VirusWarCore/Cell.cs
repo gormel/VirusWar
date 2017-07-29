@@ -1,4 +1,5 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace VirusWarCore
 {
@@ -10,7 +11,9 @@ namespace VirusWarCore
             Alive = alive;
         }
         
+        [JsonProperty("playerId")]
         public Guid PlayerId { get; private set; }
+        [JsonProperty("alive")]
         public bool Alive { get; private set; }
     }
 }
