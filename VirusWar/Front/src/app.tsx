@@ -13,7 +13,7 @@ export class App extends Component<{}, {}> {
     return (
       <Router history={history}>
         <div>
-          <Route path='/' component={Lobby} />
+          <Route exact path='/' component={Lobby} />
           <Route path='/game/:sessionId/player/:playerId' component={Game} />
         </div>
       </Router>

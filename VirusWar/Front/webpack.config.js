@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   entry: './src/index.ts',
@@ -15,4 +16,9 @@ module.exports = {
       {test: /\.tsx?$/, use: 'ts-loader'},
     ]
   },
+  plugins: [
+    new webpack.SourceMapDevToolPlugin({
+      filename: '[name].js.map',
+    }),
+  ]
 };
