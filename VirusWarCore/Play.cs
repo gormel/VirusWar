@@ -42,6 +42,8 @@ namespace VirusWarCore
 
         public bool Avaliable(int x, int y)
         {
+            if (mLastAddedPlayer < 1)
+                return false;
             if (Winner != Guid.Empty)
                 return false;
             if (mTurn < 2)
@@ -98,6 +100,8 @@ namespace VirusWarCore
 
         public bool Skip()
         {
+            if (mLastAddedPlayer < 1)
+                return false;
             if (mLastSkip)
             {
                 Winner = Guid.NewGuid();
@@ -121,6 +125,15 @@ namespace VirusWarCore
                 }
             }
             Winner = mPlayers[NextPlayerIndex];
+        }
+
+        public bool Concede()
+        {
+            if (mLastAddedPlayer < 1)
+                return false;
+
+            Winner = mPlayers[NextPlayerIndex];
+            return true;
         }
     }
 }
