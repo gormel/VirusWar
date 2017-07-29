@@ -1,0 +1,12 @@
+{
+  "name": "virus-war",
+  "version": "0.1.0",
+  "description": "VirusWar client part",
+  "main": "index.js",
+  "scripts": {
+    "_webpack": "./node_modules/.bin/webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "UNLICENSED"
+}
