@@ -1,37 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using VirusWarCore;
 
 namespace VirusWar.Controllers
 {
     public class GameController : ApiController
     {
-        private static PlayFactory mPlayFactory = new PlayFactory();
-
-        private const string Error = "Error";
-        private const string Ok = "OK";
+        private static readonly PlayFactory PlayFactory = new PlayFactory();
 
         [HttpPost]
         [Route("~/api/session")]
         public string CreateSession()
         {
-            return mPlayFactory.CreatePlay().Id.ToString();
+            return PlayFactory.CreatePlay().Id.ToString();
         }
 
         [HttpPost]
         [Route("~/api/join/{session}")]
-        public string JoinSession(string session)
+        public Player JoinSession(string session)
         {
             Guid sessionId;
             if (!Guid.TryParse(session, out sessionId))
                 return null;
-            return mPlayFactory.GetPlay(sessionId).AddPlayer().ToString();
+            return PlayFactory.GetPlay(sessionId).AddPlayer();
         }
 
         [HttpPost]
@@ -50,7 +41,7 @@ namespace VirusWar.Controllers
             if (!Guid.TryParse(session, out sess))
                 return false;
 
-            var play = mPlayFactory.GetPlay(sess);
+            var play = PlayFactory.GetPlay(sess);
             if (play == null)
                 return false;
 
@@ -62,13 +53,13 @@ namespace VirusWar.Controllers
 
         [HttpGet]
         [Route("~/api/field/{sessionId}")]
-        public int[][] GetField(string sessionId)
+        public Cell[][] GetField(string sessionId)
         {
             Guid session;
             if (!Guid.TryParse(sessionId, out session))
                 return null;
 
-            var play = mPlayFactory.GetPlay(session);
+            var play = PlayFactory.GetPlay(session);
             if (play == null)
                 return null;
 
@@ -83,7 +74,7 @@ namespace VirusWar.Controllers
             if (!Guid.TryParse(sessionId, out session))
                 return -1;
 
-            var play = mPlayFactory.GetPlay(session);
+            var play = PlayFactory.GetPlay(session);
             if (play == null)
                 return -1;
 
@@ -98,7 +89,7 @@ namespace VirusWar.Controllers
             if (!Guid.TryParse(sessionId, out sess))
                 return false;
 
-            var play = mPlayFactory.GetPlay(sess);
+            var play = PlayFactory.GetPlay(sess);
             if (play == null)
                 return false;
 
@@ -116,7 +107,7 @@ namespace VirusWar.Controllers
             if (!Guid.TryParse(sessionId, out sess))
                 return false;
 
-            var play = mPlayFactory.GetPlay(sess);
+            var play = PlayFactory.GetPlay(sess);
             if (play == null)
                 return false;
 
@@ -134,7 +125,7 @@ namespace VirusWar.Controllers
             if (!Guid.TryParse(sessionId, out sess))
                 return null;
 
-            var play = mPlayFactory.GetPlay(sess);
+            var play = PlayFactory.GetPlay(sess);
             if (play == null)
                 return null;
 
@@ -143,17 +134,17 @@ namespace VirusWar.Controllers
 
         [HttpGet]
         [Route("~/api/winner/{sessionId}")]
-        public string GetWinner(string sessionId)
+        public Player GetWinner(string sessionId)
         {
             Guid sess;
             if (!Guid.TryParse(sessionId, out sess))
                 return null;
 
-            var play = mPlayFactory.GetPlay(sess);
+            var play = PlayFactory.GetPlay(sess);
             if (play == null)
                 return null;
 
-            return play.Winner == Guid.Empty ? null : play.Winner.ToString();
+            return play.Winner;
         }
     }
 }
