@@ -22,6 +22,8 @@ namespace VirusWarCore
         private int mCurrentPlayerIndex = 0;
         private int NextPlayerIndex => (mCurrentPlayerIndex + 1) % 2;
         private int mTurn = 0;
+        private int mCurrentAction = 0;
+        private bool mLastSkip;
 
         public int[][] Field { get; } = Enumerable.Range(0, 10).Select(i => new int[10]).ToArray();
         public int FieldVersion { get; private set; }
@@ -69,6 +71,56 @@ namespace VirusWarCore
                 }
             }
             return false;
+        }
+
+        public bool Action(int x, int y)
+        {
+            if (!Avaliable(x, y))
+                return false;
+            if (Field[x][y] == 0)
+                Field[x][y] = mCurrentPlayerIndex * 2 + 1;
+            else if (Field[x][y] == NextPlayerIndex * 2 + 2)
+                Field[x][y] = NextPlayerIndex * 2 + 2;
+            else
+                return false;
+
+            FieldVersion++;
+            mCurrentAction = (mCurrentAction + 1) % 3;
+            mLastSkip = false;
+            if (mCurrentAction == 0)
+            {
+                mCurrentPlayerIndex = NextPlayerIndex;
+                CheckWinner();
+                mTurn++;
+            }
+            return true;
+        }
+
+        public bool Skip()
+        {
+            if (mLastSkip)
+            {
+                Winner = Guid.NewGuid();
+                return true;
+            }
+            if (mCurrentAction != 0)
+                return false;
+            mCurrentPlayerIndex = NextPlayerIndex;
+            CheckWinner();
+            return true;
+        }
+
+        private void CheckWinner()
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    if (Field[i][j] == mCurrentPlayerIndex * 2 + 1)
+                        return;
+                }
+            }
+            Winner = mPlayers[NextPlayerIndex];
         }
     }
 }
