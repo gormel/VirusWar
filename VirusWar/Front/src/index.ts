@@ -1,3 +1,9 @@
-export default "Hello, world";
+import { createElement } from 'react';
+import { render } from 'react-dom';
 
-//alert("hello, you!");
+import { App } from './app';
+
+const root = document.createElement('div');
+document.body.appendChild(root);
+
+render(createElement(App), root);

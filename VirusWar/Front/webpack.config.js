@@ -6,10 +6,13 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'main.bundle.js',
   },
+  resolve: {
+    extensions: ['.js', '.ts', '.tsx'],
+  },
   module: {
     rules: [
       {test: /\.css$/, use: 'css-loader'},
-      {test: /\.ts$/, use: 'ts-loader'},
+      {test: /\.tsx?$/, use: 'ts-loader'},
     ]
   },
 };
