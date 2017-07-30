@@ -73,7 +73,7 @@ namespace VirusWarCore
             if (used.Any(c => c.X == x && c.Y == y))
                 return;
             var xyId = Field[x][y].PlayerId;
-            if (xyId == Guid.Empty)
+            if (xyId != mPlayers[mCurrentPlayerIndex].Id)
                 return;
             if (!Field[x][y].Alive && !subCall)
                 return;
@@ -84,9 +84,9 @@ namespace VirusWarCore
                     if (i < 0 || i > 9 || j < 0 || j > 9 || i == x && j == y)
                         continue;
 
-                    if (Field[x][y].PlayerId == Guid.Empty || Field[x][y].Alive && Field[x][y].PlayerId != xyId)
-                        Field[x][y] = new Cell(Field[x][y].PlayerId, Field[x][y].Alive, Field[x][y].AvaliableFor.Union(new[] { xyId }).ToArray());
-                    if (!Field[x][y].Alive && Field[x][y].PlayerId != xyId)
+                    if (Field[i][j].PlayerId == Guid.Empty || Field[i][j].Alive && Field[i][j].PlayerId != xyId)
+                        Field[i][j] = new Cell(Field[i][j].PlayerId, Field[i][j].Alive, Field[i][j].AvaliableFor.Union(new[] { xyId }).ToArray());
+                    if (!Field[i][j].Alive && Field[i][j].PlayerId != xyId)
                         UpdateAvalibility(i, j, used.Concat(new [] { new Coord(x, y) }).ToList(), true);
                 }
             }
@@ -96,20 +96,12 @@ namespace VirusWarCore
         {
             if (!Avaliable(x, y))
                 return false;
-            if (Field[x][y] == null)
+            if (Field[x][y].PlayerId == Guid.Empty)
                 Field[x][y] = new Cell(mPlayers[mCurrentPlayerIndex].Id, true, new Guid[0]);
             else if (Field[x][y].Alive && Field[x][y].PlayerId == mPlayers[NextPlayerIndex].Id)
                 Field[x][y] = new Cell(mPlayers[NextPlayerIndex].Id, false, new Guid[0]);
             else
                 return false;
-            
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    UpdateAvalibility(i, j, new List<Coord>());
-                }
-            }
 
             FieldVersion++;
             mCurrentAction = (mCurrentAction + 1) % 3;
@@ -119,6 +111,14 @@ namespace VirusWarCore
                 mCurrentPlayerIndex = NextPlayerIndex;
                 CheckWinner();
                 mTurn++;
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    UpdateAvalibility(i, j, new List<Coord>());
+                }
             }
             return true;
         }

@@ -45,7 +45,7 @@ namespace VirusWar.Controllers
             if (play == null)
                 return false;
 
-            if (play.CurrentPlayer.ToString() != player)
+            if (play.CurrentPlayer.Id.ToString() != player)
                 return false;
 
             return play.Action(iX, iY);
