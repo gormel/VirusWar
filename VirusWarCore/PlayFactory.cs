@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace VirusWarCore
 {
@@ -21,6 +22,11 @@ namespace VirusWarCore
             if (!mPlays.TryGetValue(playId, out result))
                 return null;
             return result;
+        }
+
+        public PlayState[] GetPlays()
+        {
+            return mPlays.Values.Select(p => new PlayState(p.Id.ToString(), p.IsPlaying)).ToArray();
         }
     }
 }

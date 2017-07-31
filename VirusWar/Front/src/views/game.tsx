@@ -23,7 +23,7 @@ export class Game extends Component<GameProps, GameState> {
     this.state = {};
   }
 
-  componentWillMount(){
+  componentDidMount(){
     setInterval(this.fieldUpdate.bind(this), 500);
   }
 
@@ -39,8 +39,9 @@ export class Game extends Component<GameProps, GameState> {
 
   render() {
     const {sessionId, playerId} = this.props.match.params;
+
     if (this.state.field == undefined)
-      return <div>Oups, there are errors!</div>;
+      return <div>Waiting for player..</div>;
 
     return (
       <div>
@@ -71,7 +72,7 @@ export interface CellProps {
 export class CellComponent extends Component<CellProps, {}> {
   render() {
     return (
-      <div style={{borderWidth: "1px", borderStyle: "solid", borderColor: this.props.cellModel.avaliableFor.find(id => this.props.playerId == id) ? "green" : "black"}}>
+      <div style={{borderWidth: "1px", borderStyle: "solid", borderColor: this.props.cellModel.avaliableFor == this.props.playerId ? "green" : "black"}}>
         <button style={{color: this.props.cellModel.alive ? "black" : "gray"}} onClick={this.props.onClick}>
           {
             this.props.cellModel.playerId == emptyPlayerId ? "*" :

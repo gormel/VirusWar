@@ -30,6 +30,7 @@ namespace VirusWarCore
         public Guid Id { get; } = Guid.NewGuid();
         public Player CurrentPlayer => mPlayers[mCurrentPlayerIndex];
         public Player Winner { get; private set; }
+        public bool IsPlaying { get; private set; } = false;
 
         private void BeginBattle()
         {
@@ -39,11 +40,11 @@ namespace VirusWarCore
                 Field[i] = new Cell[10];
                 for (int j = 0; j < Field[i].Length; j++)
                 {
-                    Field[i][j] = new Cell(Guid.Empty, false, new Guid[0]);
+                    Field[i][j] = new Cell(Guid.Empty, false, new Guid());
                 }
             }
-            Field[0][9] = new Cell(Guid.Empty, false, new[] { mPlayers[mCurrentPlayerIndex].Id });
-            Field[9][0] = new Cell(Guid.Empty, false, new[] { mPlayers[NextPlayerIndex].Id });
+            Field[0][9] = new Cell(Guid.Empty, false, mPlayers[mCurrentPlayerIndex].Id);
+            IsPlaying = true;
         }
 
         public Player AddPlayer()
@@ -65,7 +66,7 @@ namespace VirusWarCore
                 return false;
             if (x < 0 || x > 9 || y < 0 || y > 9)
                 return false;
-            return Field[x][y].AvaliableFor.Contains(mPlayers[mCurrentPlayerIndex].Id);
+            return Field[x][y].AvaliableFor == mPlayers[mCurrentPlayerIndex].Id;
         }
 
         private void UpdateAvalibility(int x, int y, List<Coord> used, bool subCall = false)
@@ -85,9 +86,11 @@ namespace VirusWarCore
                         continue;
 
                     if (Field[i][j].PlayerId == Guid.Empty || Field[i][j].Alive && Field[i][j].PlayerId != xyId)
-                        Field[i][j] = new Cell(Field[i][j].PlayerId, Field[i][j].Alive, Field[i][j].AvaliableFor.Union(new[] { xyId }).ToArray());
-                    if (!Field[i][j].Alive && Field[i][j].PlayerId != xyId)
+                        Field[i][j] = new Cell(Field[i][j].PlayerId, Field[i][j].Alive, xyId);
+                    else if (!Field[i][j].Alive && Field[i][j].PlayerId != xyId)
                         UpdateAvalibility(i, j, used.Concat(new [] { new Coord(x, y) }).ToList(), true);
+                    else
+                        Field[i][j] = new Cell(Field[i][j].PlayerId, Field[i][j].Alive, Guid.Empty);
                 }
             }
         }
@@ -97,9 +100,9 @@ namespace VirusWarCore
             if (!Avaliable(x, y))
                 return false;
             if (Field[x][y].PlayerId == Guid.Empty)
-                Field[x][y] = new Cell(mPlayers[mCurrentPlayerIndex].Id, true, new Guid[0]);
+                Field[x][y] = new Cell(mPlayers[mCurrentPlayerIndex].Id, true, Guid.Empty);
             else if (Field[x][y].Alive && Field[x][y].PlayerId == mPlayers[NextPlayerIndex].Id)
-                Field[x][y] = new Cell(mPlayers[NextPlayerIndex].Id, false, new Guid[0]);
+                Field[x][y] = new Cell(mPlayers[NextPlayerIndex].Id, false, Guid.Empty);
             else
                 return false;
 
@@ -117,8 +120,20 @@ namespace VirusWarCore
             {
                 for (int j = 0; j < 10; j++)
                 {
+                    Field[i][j] = new Cell(Field[i][j].PlayerId, Field[i][j].Alive, Guid.Empty);
+                }
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
                     UpdateAvalibility(i, j, new List<Coord>());
                 }
+            }
+
+            if (mTurn == 1 && mCurrentAction == 0)
+            {
+                Field[9][0] = new Cell(Guid.Empty, false, mPlayers[1].Id);
             }
             return true;
         }
@@ -141,6 +156,8 @@ namespace VirusWarCore
 
         private void CheckWinner()
         {
+            if (mTurn < 2)
+                return;
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)

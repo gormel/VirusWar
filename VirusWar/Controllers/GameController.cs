@@ -15,6 +15,13 @@ namespace VirusWar.Controllers
             return PlayFactory.CreatePlay().Id.ToString();
         }
 
+        [HttpGet]
+        [Route("~/api/sessions")]
+        public PlayState[] GetSessions()
+        {
+            return PlayFactory.GetPlays();
+        }
+
         [HttpPost]
         [Route("~/api/join/{session}")]
         public Player JoinSession(string session)

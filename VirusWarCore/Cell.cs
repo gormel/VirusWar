@@ -5,7 +5,7 @@ namespace VirusWarCore
 {
     public class Cell
     {
-        public Cell(Guid playerId, bool alive, Guid[] avaliableFor)
+        public Cell(Guid playerId, bool alive, Guid avaliableFor)
         {
             PlayerId = playerId;
             Alive = alive;
@@ -17,6 +17,6 @@ namespace VirusWarCore
         [JsonProperty("alive")]
         public bool Alive { get; private set; }
         [JsonProperty("avaliableFor")]
-        public Guid[] AvaliableFor { get; private set; }
+        public Guid AvaliableFor { get; private set; }
     }
 }

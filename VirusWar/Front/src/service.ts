@@ -4,6 +4,11 @@ export async function createSession(): Promise<GameSession> {
   return new GameSession(sessionID);
 }
 
+export async function getSessions(): Promise<PlayState[]> {
+  const response = await fetch(`/api/sessions`, {method: 'GET'});
+  return await response.json();
+}
+
 export class GameSession {
   constructor(readonly id: string) {}
 
@@ -36,7 +41,12 @@ export interface Player {
 export interface Cell {
   playerId: string;
   alive: boolean;
-  avaliableFor: string[];
+  avaliableFor: string;
+}
+
+export interface PlayState {
+  playId: string;
+  isPlaying: boolean;
 }
 
 export const emptyPlayerId: string = "00000000-0000-0000-0000-000000000000";
